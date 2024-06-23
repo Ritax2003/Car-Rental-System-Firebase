@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Recovery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Firebase SDKs -->
+    
+    
+</head>
+<body>
+    <div class="container">
+        <div class="form-title">Recover Password</div>
+        <form id="recover-password-form">
+            <div class="input-group">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="email" required placeholder="Enter your mail">
+                <label for="email">Your Registered Email</label>
+            </div>
+            <button type="submit">Send Password Reset Email</button>
+        </form>
+        <div class="messageDiv" id="message"></div>
+    </div>
+
+    <script type="module" src="js/recoverPassword.js"></script>
+</body>
+</html>
