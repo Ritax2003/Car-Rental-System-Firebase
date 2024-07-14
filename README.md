@@ -5,4 +5,4 @@
 2. Working Sign in page
 3. Forget password page
 4. Dashboard with user name.
-5. User can recharge balance.
+5. User can recharge balance. Balance is updated for that user only.
