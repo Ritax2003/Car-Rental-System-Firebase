@@ -7,11 +7,76 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/user-dashboard.css">
     <script type='text/javascript' src='https://www.bing.com/api/maps/mapcontrol?key=AgxmrUKFYAZ9btWXzZV_Oa-nmpshJC_ogrerWB-F9fD33n1WdtFSADhVlOrQFXNo'></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-    <script src="js/dashboard.js" defer></script>
-    <script src="js/firebaseauth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-app-compat.js"></script>
+    <!-- Firebase Authentication -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
+    <!-- Firebase Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
+    
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyClgM3EtwTafPWCgYyTqZ6cvP0Zky8IeEE",
+            authDomain: "car-rental-system-1223a.firebaseapp.com",
+            projectId: "car-rental-system-1223a",
+            storageBucket: "car-rental-system-1223a.appspot.com",
+            messagingSenderId: "1093861234143",
+            appId: "1:1093861234143:web:13588376ee6d8ca1f9606a",
+            measurementId: "G-XDQ5QF3WBX",
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // Ensure user is authenticated before allowing balance recharge
+        firebase.auth().onAuthStateChanged(user => {
+            if (user) {
+                // User is signed in
+                localStorage.setItem('loggedInUserId', user.uid);
+                // Other initialization code
+            } else {
+                // No user is signed in
+                localStorage.removeItem('loggedInUserId');
+                // Redirect to login page or show login UI
+            }
+        });
+        function rechargeBalance() {
+            const rechargeAmount = prompt("Enter recharge amount:");
+            if (rechargeAmount) {
+                const userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                const newBalance = userBalance + parseFloat(rechargeAmount);
+                localStorage.setItem('userBalance', newBalance.toFixed(2));
+
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    walletBalance.textContent = `$ ${newBalance.toFixed(2)}`;
+                }
+
+                const userId = localStorage.getItem('loggedInUserId');
+                if (userId) {
+                    const userRef = db.collection('users').doc(userId);
+                    userRef.update({ balance: newBalance.toFixed(2) })
+                        .then(() => {
+                            showMessage('Balance recharged successfully and updated in Firestore!', 'message');
+                        })
+                        .catch((error) => {
+                            console.error('Error updating balance in Firestore: ', error);
+                            showMessage('Error updating balance in Firestore.', 'message');
+                        });
+                } else {
+                    console.error('No userId found in localStorage.');
+                    showMessage('No userId found in localStorage.', 'message');
+                }
+            }
+        }
+
+        function showMessage(message, elementId) {
+            const messageElement = document.getElementById(elementId);
+            if (messageElement) {
+                messageElement.textContent = message;
+            }
+        }
+    </script>
     <style>
         #myMap {
             width: 100%;
@@ -52,7 +117,7 @@
         .btn:disabled {
             background-color: #ccc;
         }
-        .log-out{
+        .log-out {
             text-decoration: none;
             color: #ff0000;
             border: 1px solid #ff0000;
@@ -77,6 +142,29 @@
             opacity: 0;
             transition: opacity 0.5s;
         }
+        .wallet {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .wallet i {
+            font-size: 1.5rem;
+        }
+        .wallet span {
+            font-size: 1rem;
+        }
+        .recharge {
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .recharge:hover {
+            background-color: #218838;
+        }
     </style>
     <script type='text/javascript'>
         function loadMapScenario() {
@@ -97,6 +185,20 @@
             }, 5000);
         }
 
+        /*function rechargeBalance() {
+            const rechargeAmount = prompt("Enter recharge amount:");
+            if (rechargeAmount) {
+                const userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
+                const newBalance = userBalance + parseFloat(rechargeAmount);
+                localStorage.setItem('userBalance', newBalance.toFixed(2));
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    walletBalance.textContent = `Balance: $${newBalance.toFixed(2)}`;
+                }
+                showMessage('Balance recharged successfully!', 'message');
+            }
+        }*/
+
         document.addEventListener('DOMContentLoaded', () => {
             const userId = localStorage.getItem('loggedInUserId');
             const userName = localStorage.getItem('loggedInUserName');
@@ -105,6 +207,12 @@
                 const welcomeMessage = document.getElementById('welcomeMessage');
                 if (welcomeMessage) {
                     welcomeMessage.textContent = `Welcome, ${userName}`;
+                }
+
+                const userBalance = localStorage.getItem('userBalance') || '0.00';
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    walletBalance.textContent = `$${userBalance}`;
                 }
             } else {
                 // If no user is logged in, redirect to login page
@@ -143,6 +251,12 @@
                     }, 3000);
                 });
             }
+
+            // Recharge button functionality
+            const rechargeBtn = document.getElementById('rechargeBtn');
+            if (rechargeBtn) {
+                rechargeBtn.addEventListener('click', rechargeBalance);
+            }
         });
     </script>
 </head>
@@ -154,13 +268,20 @@
                 <div id="dateTime"></div>
             </div>
             <div class="header-right">
+                <div class="wallet">
+                    <i class="fas fa-wallet"></i>
+                    <span id="walletBalance"></span>
+                    <button id="rechargeBtn" class="recharge">Recharge</button>
+                </div>
                 <a href="#" id="logoutBtn" class="log-out">Log Out</a>
             </div>
         </div>
         <div class="map-container">
             <h2>Book a Ride</h2>
+            <br>
             <div id="myMap"></div>
-            <button id="bookRideBtn" class="btn" disabled>Book Ride</button>
+            <br>
+            <button id="bookRideBtn" class="btn" >Book Ride</button>
         </div>
         <div class="rides-container">
             <h2>Previous Rides</h2>

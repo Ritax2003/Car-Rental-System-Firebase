@@ -54,6 +54,7 @@ signUp.addEventListener('click', (event) => {
                 PinCode: pin,
                 Mobile: mobile,
                 License: license,
+                balance:0,
             };
             showMessage('Account Created Successfully', 'signUpMessage');
             const docRef = doc(db, "users", user.uid);
@@ -91,6 +92,7 @@ signIn.addEventListener('click', async (event) => {
                 const userData = docSnap.data();
                 localStorage.setItem('loggedInUserId', user.uid);
                 localStorage.setItem('loggedInUserName', userData.DisplayName);
+                localStorage.setItem('userBalance',userData.balance);
                 window.location.href = 'user-dashboard.html';
             } else {
                 showMessage('No such document!', 'signInMessage');
