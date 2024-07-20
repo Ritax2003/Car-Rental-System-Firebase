@@ -92,10 +92,19 @@
         <div class="links">
           <span style="font-size: 70%">Don't have account yet?</span>
           <button id="signUpButton">Sign Up</button>
-          <button id="signUpButton">Manager Login</button>
+          <button id="MngrButton">Manager Login</button>
           <button id="signUpButton">Driver Login</button>
         </div>
       </div>
       <script src="js/script.js"></script>
+      <script>
+        const bookRideBtn = document.getElementById('MngrButton');
+            if (MngrButton) {
+              MngrButton.addEventListener('click', () => {
+                    window.location.href = 'manager-login.html';
+                });
+            }
+      </script>
+
 </body>
 </html>

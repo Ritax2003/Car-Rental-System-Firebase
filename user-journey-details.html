@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Journey Details</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <script type="module" src="js/user-journey.js"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h2 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        label {
+            font-weight: 500;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        input:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+        button {
+            padding: 12px 20px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+    <!-- Add Firebase SDKs -->
+    
+</head>
+<body>
+    <div class="container">
+        <h2>Enter Journey Details</h2>
+        <form id="journeyForm">
+            <label for="pickupLocation">Pick-up Location</label>
+            <input type="text" id="pickupLocation" name="pickupLocation" required>
+            <label for="dropLocation">Drop Location</label>
+            <input type="text" id="dropLocation" name="dropLocation" required>
+            <label for="journeyDate">Journey Date</label>
+            <input type="date" id="journeyDate" name="journeyDate" required>
+            <label for="journeyTime">Journey Time</label>
+            <input type="time" id="journeyTime" name="journeyTime" required>
+            <button type="submit" class="btn">Confirm</button>
+        </form>
+    </div>
+    
+</body>
+</html>

@@ -12,7 +12,95 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-auth-compat.js"></script>
     <!-- Firebase Firestore -->
     <script src="https://www.gstatic.com/firebasejs/9.6.10/firebase-firestore-compat.js"></script>
-    
+    <style>
+        /* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; /* 15% from the top and centered */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; /* Could be more or less, depending on screen size */
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+/* The Close Button */
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.recharge-options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.recharge-option {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+.recharge-option:hover {
+    background-color: #0056b3;
+}
+
+#rechargeAmountContainer {
+    margin-top: 20px;
+}
+
+#rechargeAmount {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+#confirmRechargeBtn {
+    padding: 10px 20px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+}
+
+#confirmRechargeBtn:hover {
+    background-color: #218838;
+}
+
+    </style>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyClgM3EtwTafPWCgYyTqZ6cvP0Zky8IeEE",
@@ -76,6 +164,99 @@
                 messageElement.textContent = message;
             }
         }
+        function loadMapScenario() {
+            var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
+                credentials: 'AgxmrUKFYAZ9btWXzZV_Oa-nmpshJC_ogrerWB-F9fD33n1WdtFSADhVlOrQFXNo',
+                center: new Microsoft.Maps.Location(47.6062, -122.3321),
+                zoom: 10
+            });
+        }
+
+        function showMessage(message, divId) {
+            var messageDiv = document.getElementById(divId);
+            messageDiv.style.display = "block";
+            messageDiv.innerHTML = message;
+            messageDiv.style.opacity = 1;
+            setTimeout(function () {
+                messageDiv.style.opacity = 0;
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const userId = localStorage.getItem('loggedInUserId');
+            const userName = localStorage.getItem('loggedInUserName');
+
+            if (userId && userName) {
+                const welcomeMessage = document.getElementById('welcomeMessage');
+                if (welcomeMessage) {
+                    welcomeMessage.textContent = `Welcome, ${userName}`;
+                }
+
+                const userBalance = localStorage.getItem('userBalance') || '0.00';
+                const walletBalance = document.getElementById('walletBalance');
+                if (walletBalance) {
+                    walletBalance.textContent = `$${userBalance}`;
+                }
+            } else {
+                // If no user is logged in, redirect to login page
+                window.location.href = 'index.html';
+            }
+
+            // Update time and date
+            const dateTimeElement = document.getElementById('dateTime');
+            if (dateTimeElement) {
+                const now = new Date();
+                const options = { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric', 
+                    hour: '2-digit', 
+                    minute: '2-digit', 
+                    second: '2-digit' 
+                };
+                dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+                setInterval(() => {
+                    const now = new Date();
+                    dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
+                }, 1000);
+            }
+
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', () => {
+            // Perform logout actions
+            localStorage.clear(); // Clear all stored data
+            showMessage('Logout successful !!', 'message');
+            setTimeout(() => {
+                // Redirect to login page after showing message
+                window.location.href = 'index.html';
+            }, 3000);
+
+            // Clear browser history to prevent back navigation
+            setTimeout(() => {
+                history.pushState(null, null, 'index.html');
+                window.addEventListener('popstate', function (event) {
+                    history.pushState(null, null, 'index.html');
+                });
+            }, 3500);
+        });
+    }
+
+
+            // Recharge button functionality
+            const rechargeBtn = document.getElementById('rechargeBtn');
+            if (rechargeBtn) {
+                rechargeBtn.addEventListener('click', rechargeBalance);
+            }
+            const bookRideBtn = document.getElementById('bookRideBtn');
+            if (bookRideBtn) {
+                bookRideBtn.addEventListener('click', () => {
+                    window.location.href = 'user-journey-details.html';
+                });
+            }
+        });
     </script>
     <style>
         #myMap {
@@ -165,99 +346,13 @@
         .recharge:hover {
             background-color: #218838;
         }
+        .bookRideBtn:hover{
+            background-color: #000000;
+            color: #ff0000;
+        }
     </style>
     <script type='text/javascript'>
-        function loadMapScenario() {
-            var map = new Microsoft.Maps.Map(document.getElementById('myMap'), {
-                credentials: 'AgxmrUKFYAZ9btWXzZV_Oa-nmpshJC_ogrerWB-F9fD33n1WdtFSADhVlOrQFXNo',
-                center: new Microsoft.Maps.Location(47.6062, -122.3321),
-                zoom: 10
-            });
-        }
-
-        function showMessage(message, divId) {
-            var messageDiv = document.getElementById(divId);
-            messageDiv.style.display = "block";
-            messageDiv.innerHTML = message;
-            messageDiv.style.opacity = 1;
-            setTimeout(function () {
-                messageDiv.style.opacity = 0;
-            }, 5000);
-        }
-
-        /*function rechargeBalance() {
-            const rechargeAmount = prompt("Enter recharge amount:");
-            if (rechargeAmount) {
-                const userBalance = parseFloat(localStorage.getItem('userBalance')) || 0;
-                const newBalance = userBalance + parseFloat(rechargeAmount);
-                localStorage.setItem('userBalance', newBalance.toFixed(2));
-                const walletBalance = document.getElementById('walletBalance');
-                if (walletBalance) {
-                    walletBalance.textContent = `Balance: $${newBalance.toFixed(2)}`;
-                }
-                showMessage('Balance recharged successfully!', 'message');
-            }
-        }*/
-
-        document.addEventListener('DOMContentLoaded', () => {
-            const userId = localStorage.getItem('loggedInUserId');
-            const userName = localStorage.getItem('loggedInUserName');
-
-            if (userId && userName) {
-                const welcomeMessage = document.getElementById('welcomeMessage');
-                if (welcomeMessage) {
-                    welcomeMessage.textContent = `Welcome, ${userName}`;
-                }
-
-                const userBalance = localStorage.getItem('userBalance') || '0.00';
-                const walletBalance = document.getElementById('walletBalance');
-                if (walletBalance) {
-                    walletBalance.textContent = `$${userBalance}`;
-                }
-            } else {
-                // If no user is logged in, redirect to login page
-                window.location.href = 'index.html';
-            }
-
-            // Update time and date
-            const dateTimeElement = document.getElementById('dateTime');
-            if (dateTimeElement) {
-                const now = new Date();
-                const options = { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric', 
-                    hour: '2-digit', 
-                    minute: '2-digit', 
-                    second: '2-digit' 
-                };
-                dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
-                setInterval(() => {
-                    const now = new Date();
-                    dateTimeElement.textContent = now.toLocaleDateString('en-US', options);
-                }, 1000);
-            }
-
-            // Logout functionality
-            const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    // Perform logout actions
-                    localStorage.clear(); // Clear all stored data
-                    showMessage('Logout successful !!', 'message');
-                    setTimeout(() => {
-                        window.location.href = 'index2.html'; // Redirect to logout page after showing message
-                    }, 3000);
-                });
-            }
-
-            // Recharge button functionality
-            const rechargeBtn = document.getElementById('rechargeBtn');
-            if (rechargeBtn) {
-                rechargeBtn.addEventListener('click', rechargeBalance);
-            }
-        });
+        
     </script>
 </head>
 <body onload="loadMapScenario();">
@@ -281,7 +376,7 @@
             <br>
             <div id="myMap"></div>
             <br>
-            <button id="bookRideBtn" class="btn" >Book Ride</button>
+            <button id="bookRideBtn" class="btn bookRideBtn" >Book Ride</button>
         </div>
         <div class="rides-container">
             <h2>Previous Rides</h2>
@@ -289,5 +384,23 @@
         </div>
     </div>
     <div id="message" class="message"></div>
+    <!-- Recharge Modal -->
+<div id="rechargeModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Choose a Recharge Method</h2>
+        <div class="recharge-options">
+            <button class="recharge-option" data-method="UPI">UPI</button>
+            <button class="recharge-option" data-method="Card">Card</button>
+            <button class="recharge-option" data-method="Net Banking">Net Banking</button>
+        </div>
+        <div id="rechargeAmountContainer" style="display:none;">
+            <label for="rechargeAmount">Enter Amount:</label>
+            <input type="number" id="rechargeAmount" min="0" step="0.01">
+            <button id="confirmRechargeBtn" class="recharge">Confirm Recharge</button>
+        </div>
+    </div>
+</div>
+
 </body>
 </html>

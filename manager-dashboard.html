@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manager Dashboard</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap">
+    <script type="module" src="js/manager-dashboard.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/user-dashboard.css">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #333;
+            text-align: center;
+            font-weight: 500;
+        }
+        .ride {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+        
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+        }
+        .log-out {
+            text-decoration: none;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .log-out:hover {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .bookRideBtn:hover{
+            background-color: #000000;
+            color: #ff0000;
+        }
+        .container {
+            width: 90%;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            background-color: #ccc;
+        }
+        .log-out {
+            text-decoration: none;
+            color: #ff0000;
+            border: 1px solid #ff0000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+        .log-out:hover {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #ff0000;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+    
+    </style>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.11.1/firebase-firestore.js"></script>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-left">
+                <h2 id="welcomeMessage"></h2>
+                <div id="dateTime"></div>
+            </div>
+            <div class="header-right">
+                <a href="#" id="logoutBtn" class="log-out">Log Out</a>
+            </div>
+        </div>
+        <div class="map-container">
+           <div class="ridesContainer" id="ridesContainer">
+            <table id="ridesTable">
+                <thead>
+                    <tr>
+                        
+                        <th>User ID</th>
+                        
+                        <th>Pick-up Location</th>
+                        <th>Drop Location</th>
+                        <th>Journey Date</th>
+                        <th>Journey Time</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Rides will be populated here -->
+                </tbody>
+            </table>
+
+           </div>
+        </div>  
+    </div>
+    <div id="message" class="message"></div>
+
+</body>
+</html>
